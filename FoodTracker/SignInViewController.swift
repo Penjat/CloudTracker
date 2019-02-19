@@ -24,6 +24,7 @@ class SignInViewController: UIViewController {
     }else{
       print("user info not found, please log in or sign up")
     }
+    
   }
 
   @IBAction func pressedLogIn(_ sender: Any) {

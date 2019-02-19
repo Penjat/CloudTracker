@@ -29,7 +29,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     if let meal = meal {
       navigationItem.title = meal.name
       nameTextField.text = meal.name
-      photoImageView.image = meal.photo
+      meal.mealImage.getImage(imageView: photoImageView)
       ratingControl.rating = meal.rating
       calField.text = "\(meal.cals)"
       descriptionField.text = meal.mealDescription
@@ -96,18 +96,36 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     backToTable()
   }
   @IBAction func saveMeal(_ sender: Any) {
-    let name = nameTextField.text ?? ""
+    
+    //check that the image has been uploaded
     let photo = photoImageView.image
+    
+    let closure = {(urlString:String )-> Void in
+      print("the photo was uploaded to the url: \(urlString)")
+      let mealImage = MealImage(urlString: urlString)
+      self.uploadMeal(mealImage: mealImage)
+    }
+    APIManager.postImage(image: photo!, closure: closure)
+  }
+  
+  
+  func uploadMeal(mealImage:MealImage){
+    //TODO check if meal has been saved
+    let name = nameTextField.text ?? ""
+    
     let rating = ratingControl.rating
     let cals = Int(calField.text!)
     let mealDescription = descriptionField.text!
+    let imagePath = mealImage.urlString
     
     // Set the meal to be passed to MealTableViewController after the unwind segue.
-    meal = Meal(name: name, photo: photo, rating: rating , cals:cals! , mealDescription:mealDescription)
+    meal = Meal(name: name, mealImage: mealImage, rating: rating , cals:cals! , mealDescription:mealDescription)
     let postBody :[String:Any] = [
       "title": name,
       "calories": cals!,
-      "description": mealDescription
+      "description": mealDescription,
+      "imagePath": imagePath
+      
     ]
     let closure = {(json:[String:Any]?)->Void in
       self.backToTable()
@@ -121,10 +139,6 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     
     super.prepare(for: segue, sender: sender)
-    
-    
-    
-    
     
   }
   

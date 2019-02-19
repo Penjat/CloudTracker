@@ -56,7 +56,7 @@ class MealTableViewController: UITableViewController {
         let meal = meals[indexPath.row]
         
         cell.nameLabel.text = meal.name
-        cell.photoImageView.image = meal.photo
+        meal.mealImage.getImage(imageView: cell.photoImageView)
         cell.ratingControl.rating = meal.rating
         
         return cell
@@ -152,9 +152,11 @@ class MealTableViewController: UITableViewController {
       let title = jsonMeal["title"] as! String
       let calories = jsonMeal["calories"] as! Int
       let description = jsonMeal["description"] as! String
+      let mealImage = MealImage(urlString:jsonMeal["imagePath"] as! String)
+      let rating =  ((jsonMeal["rating"] as? Int) != nil) ? jsonMeal["rating"] as! Int : 0
       
+      let meal = Meal(name: title , mealImage: mealImage, rating: rating , cals:calories , mealDescription:description)
       
-      let meal = Meal(name: title , photo: nil, rating: 3 , cals:calories , mealDescription:description)
       meals.append(meal!)
     }
     tableView.reloadData()
@@ -187,23 +189,23 @@ class MealTableViewController: UITableViewController {
     
     private func loadSampleMeals() {
         
-        let photo1 = UIImage(named: "meal1")
-        let photo2 = UIImage(named: "meal2")
-        let photo3 = UIImage(named: "meal3")
-
-      guard let meal1 = Meal(name: "Caprese Salad", photo: photo1, rating: 4 , cals:33 , mealDescription:"hi") else {
-            fatalError("Unable to instantiate meal1")
-        }
-
-        guard let meal2 = Meal(name: "Chicken and Potatoes", photo: photo2, rating: 5 , cals:33 , mealDescription:"hi") else {
-            fatalError("Unable to instantiate meal2")
-        }
-
-        guard let meal3 = Meal(name: "Pasta with Meatballs", photo: photo3, rating: 3 , cals:33 , mealDescription:"hi") else {
-            fatalError("Unable to instantiate meal2")
-        }
-
-        meals += [meal1, meal2, meal3]
+//        let photo1 = UIImage(named: "meal1")
+//        let photo2 = UIImage(named: "meal2")
+//        let photo3 = UIImage(named: "meal3")
+//
+//      guard let meal1 = Meal(name: "Caprese Salad", photo: photo1, rating: 4 , cals:33 , mealDescription:"hi") else {
+//            fatalError("Unable to instantiate meal1")
+//        }
+//
+//        guard let meal2 = Meal(name: "Chicken and Potatoes", photo: photo2, rating: 5 , cals:33 , mealDescription:"hi") else {
+//            fatalError("Unable to instantiate meal2")
+//        }
+//
+//        guard let meal3 = Meal(name: "Pasta with Meatballs", photo: photo3, rating: 3 , cals:33 , mealDescription:"hi") else {
+//            fatalError("Unable to instantiate meal2")
+//        }
+//
+//        meals += [meal1, meal2, meal3]
     }
     
     private func saveMeals() {

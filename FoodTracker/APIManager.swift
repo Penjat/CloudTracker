@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class APIManager{
   
@@ -106,5 +107,55 @@ class APIManager{
       
     }
     task.resume()
+  }
+  
+  static func postImage(image:UIImage , closure:@escaping (String)->Void){
+    
+    //let image = UIImage(named: "bb.png")
+    let data = UIImagePNGRepresentation(image)
+    
+    
+    
+    let headers = [
+      "Authorization": "Client-ID 887c27b7d390539",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "cache-control": "no-cache",
+      "Postman-Token": "a67afcfb-784e-42e5-affc-beef0e8a24b4"
+      
+    ]
+    
+    let request = NSMutableURLRequest(url: NSURL(string: "https://api.imgur.com/3/image")! as URL,
+                                      cachePolicy: .useProtocolCachePolicy,
+                                      timeoutInterval: 10.0)
+    request.httpMethod = "POST"
+    request.allHTTPHeaderFields = headers
+    request.httpBody = data
+    let session = URLSession.shared
+    let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+      if (error != nil) {
+        print(error)
+      } else {
+        let httpResponse = response as? HTTPURLResponse
+        print(httpResponse)
+        
+        guard let jsonUnformatted = try? JSONSerialization.jsonObject(with: data!, options: []), let json = jsonUnformatted as? [String:Any] else {
+                 print("data returned is not json, or not valid ")
+          return
+        }
+        print("the json = \(json)")
+        if let responsData = json["data"] as? [String:Any], let urlString =  responsData["link"] as? String{
+          
+          DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            closure(urlString)
+          }
+        }else{
+          print("error, was not able to upload meal photo")
+        }
+        
+        
+      }
+    })
+    
+    dataTask.resume()
   }
 }
