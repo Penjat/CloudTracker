@@ -124,7 +124,8 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
       "title": name,
       "calories": cals!,
       "description": mealDescription,
-      "imagePath": imagePath
+      "imagePath": imagePath,
+      "rating":rating
       
     ]
     let closure = {(json:[String:Any]?)->Void in

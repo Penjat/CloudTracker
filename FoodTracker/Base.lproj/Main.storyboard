@@ -56,12 +56,22 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Your Meals" id="EhK-wQ-Gxn">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="wiQ-l3-IJL">
-                            <connections>
-                                <segue destination="jxq-Qe-lqw" kind="presentation" identifier="AddItem" id="Rc3-te-viX"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="wiQ-l3-IJL">
+                                <connections>
+                                    <segue destination="jxq-Qe-lqw" kind="presentation" identifier="AddItem" id="Rc3-te-viX"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="logout" id="Q5o-tJ-dQb">
+                                <connections>
+                                    <action selector="pressedLogout:" destination="tru-c3-rzc" id="rcw-Ul-R4X"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
+                    <connections>
+                        <segue destination="gL0-rZ-T4R" kind="show" identifier="backToSignIn" id="YuC-si-rAy"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZHp-yK-be7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -173,7 +183,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="tfL-s3-HLw">
-                                <rect key="frame" x="48" y="52" width="279" height="172.5"/>
+                                <rect key="frame" x="48" y="96" width="279" height="172.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BIr-qK-ySi">
                                         <rect key="frame" x="0.0" y="0.0" width="279" height="20.5"/>

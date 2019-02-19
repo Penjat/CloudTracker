@@ -14,7 +14,7 @@ class MealTableViewController: UITableViewController {
         
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
-        loadMealsFromNetwork()
+      
         // Load any saved meals, otherwise load sample data.
         if let savedMeals = loadMeals() {
             //meals += savedMeals
@@ -26,6 +26,9 @@ class MealTableViewController: UITableViewController {
           
         }
     }
+  override func viewDidAppear(_ animated: Bool) {
+    loadMealsFromNetwork()
+  }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -83,7 +86,17 @@ class MealTableViewController: UITableViewController {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
+  @IBAction func pressedLogout(_ sender: Any) {
+    print("pressed logout")
+    //remove all user defaults
+    UserDefaults.standard.removeObject(forKey: "username")
+    UserDefaults.standard.removeObject(forKey: "password")
+    UserDefaults.standard.removeObject(forKey: "token")
+    //segue to sign in view
+    performSegue(withIdentifier: "backToSignIn", sender: self)
     
+  }
+  
 
     /*
     // Override to support rearranging the table view.
@@ -112,6 +125,8 @@ class MealTableViewController: UITableViewController {
             
         case "AddItem":
             os_log("Adding a new meal.", log: OSLog.default, type: .debug)
+        case "backToSignIn":
+          print("back to sign in, don't freak out")
             
         case "ShowDetail":
             guard let mealDetailViewController = segue.destination as? MealViewController else {
@@ -147,12 +162,14 @@ class MealTableViewController: UITableViewController {
   func jsonToMeals(json:[[String:Any]]?){
     print("converting json to meals \(json)")
     
-    
+    //Not efficient but ok
+    meals.removeAll()
     for jsonMeal in json! {
       let title = jsonMeal["title"] as! String
       let calories = jsonMeal["calories"] as! Int
       let description = jsonMeal["description"] as! String
-      let mealImage = MealImage(urlString:jsonMeal["imagePath"] as! String)
+      let imageUrl = (jsonMeal["imagePath"] as? String != nil) ? jsonMeal["imagePath"] as! String : ""
+      let mealImage = MealImage(urlString:imageUrl)
       let rating =  ((jsonMeal["rating"] as? Int) != nil) ? jsonMeal["rating"] as! Int : 0
       
       let meal = Meal(name: title , mealImage: mealImage, rating: rating , cals:calories , mealDescription:description)
