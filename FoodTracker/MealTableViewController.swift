@@ -14,14 +14,16 @@ class MealTableViewController: UITableViewController {
         
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
-        
+        loadMealsFromNetwork()
         // Load any saved meals, otherwise load sample data.
         if let savedMeals = loadMeals() {
-            meals += savedMeals
+            //meals += savedMeals
+          
         }
         else {
             // Load the sample data.
-            loadSampleMeals()
+            //loadSampleMeals()
+          
         }
     }
 
@@ -131,7 +133,32 @@ class MealTableViewController: UITableViewController {
             fatalError("Unexpected Segue Identifier; \(segue.identifier)")
         }
     }
-
+  func loadMealsFromNetwork(){
+    
+    let body = [String:Any]()
+    let closure = {(json:[[String:Any]]? )->Void in
+      print("converting json to meals \(json)")
+      self.jsonToMeals(json:json)
+    }
+    let token = UserDefaults.standard.object(forKey: "token") as! String
+    APIManager.getRequest(body: body, suffix: "/users/me/meals", closure: closure, token: token  )
+  }
+  
+  func jsonToMeals(json:[[String:Any]]?){
+    print("converting json to meals \(json)")
+    
+    
+    for jsonMeal in json! {
+      let title = jsonMeal["title"] as! String
+      let calories = jsonMeal["calories"] as! Int
+      let description = jsonMeal["description"] as! String
+      
+      
+      let meal = Meal(name: title , photo: nil, rating: 3 , cals:calories , mealDescription:description)
+      meals.append(meal!)
+    }
+    tableView.reloadData()
+  }
     
     //MARK: Actions
     
@@ -164,15 +191,15 @@ class MealTableViewController: UITableViewController {
         let photo2 = UIImage(named: "meal2")
         let photo3 = UIImage(named: "meal3")
 
-        guard let meal1 = Meal(name: "Caprese Salad", photo: photo1, rating: 4) else {
+      guard let meal1 = Meal(name: "Caprese Salad", photo: photo1, rating: 4 , cals:33 , mealDescription:"hi") else {
             fatalError("Unable to instantiate meal1")
         }
 
-        guard let meal2 = Meal(name: "Chicken and Potatoes", photo: photo2, rating: 5) else {
+        guard let meal2 = Meal(name: "Chicken and Potatoes", photo: photo2, rating: 5 , cals:33 , mealDescription:"hi") else {
             fatalError("Unable to instantiate meal2")
         }
 
-        guard let meal3 = Meal(name: "Pasta with Meatballs", photo: photo3, rating: 3) else {
+        guard let meal3 = Meal(name: "Pasta with Meatballs", photo: photo3, rating: 3 , cals:33 , mealDescription:"hi") else {
             fatalError("Unable to instantiate meal2")
         }
 
